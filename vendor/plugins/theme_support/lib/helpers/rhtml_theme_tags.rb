@@ -26,10 +26,10 @@ module ActionView::Helpers::AssetTagHelper
    def theme_stylesheet_link_tag(*sources)
       sources.uniq!
       options = sources.last.is_a?(Hash) ? sources.pop.stringify_keys : { }
-      sources.collect { |source|
+      _html_safe(sources.collect { |source|
          source = theme_stylesheet_path(source)
          tag("link", { "rel" => "Stylesheet", "type" => "text/css", "media" => "screen", "href" => source }.merge(options))
-      }.join("\n")
+      }.join("\n"))
    end
    
    # This tag will return a theme-specific IMG
@@ -57,10 +57,19 @@ module ActionView::Helpers::AssetTagHelper
        sources.delete(:defaults)
        sources << "application" if defined?(RAILS_ROOT) && File.exists?("#{RAILS_ROOT}/public/javascripts/application.js")
      end
-     sources.collect { |source|
+     _html_safe(sources.collect { |source|
        source = theme_javascript_path(source)
        content_tag("script", "", { "type" => "text/javascript", "src" => source }.merge(options))
-     }.join("\n")
+     }.join("\n"))
+   end
+
+   protected
+
+   # Declare that the +markup+ is html_safe for use with RailsXSS.
+   def _html_safe(markup)
+     markup.respond_to?(:html_safe) ?
+       markup.html_safe :
+       markup
    end
 
 end
