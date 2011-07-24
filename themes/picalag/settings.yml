@@ -1,0 +1,23 @@
+# Site's name:
+name: 'Picalag'
+
+# Site's tagline:
+tagline: "An intelligent events aggregator for Manchester"
+
+# Site's URL with trailing slash:
+url: 'http://www.picalag-mcr.co.uk/'
+
+# Default timezone, run "rake -D time" for information on how to display known timezones:
+timezone: 'London'
+
+# Google map to display on /venues page:
+venues_google_map_options:
+  # Zoom magnification level:
+  zoom: 12
+  # Center of the map, in latitude and longitude:
+  center: [53.482785, -2.233829]
+
+# Array of tag names to exclude from tag cloud:
+tagcloud_exclusions:
+  - ostartupskey
+  - tvg
