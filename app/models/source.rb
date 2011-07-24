@@ -1,15 +1,15 @@
 # == Schema Information
-# Schema version: 20110604174521
+# Schema version: 20080705164959
 #
 # Table name: sources
 #
 #  id          :integer         not null, primary key
-#  title       :string(255)
-#  url         :string(255)
-#  imported_at :datetime
-#  created_at  :datetime
-#  updated_at  :datetime
-#  reimport    :boolean
+#  title       :string(255)     
+#  url         :string(255)     
+#  imported_at :datetime        
+#  created_at  :datetime        
+#  updated_at  :datetime        
+#  reimport    :boolean         
 #
 
 # == Source
@@ -126,6 +126,53 @@ class Source < ActiveRecord::Base
   # Return the name of the source, which can be its title or URL.
   def name
     [title,url].detect{|t| !t.blank?}
+  end
+  
+  
+  # API_import_event! extracts info from table and create event and venue for this source
+  #
+  # Options:
+  # * :Id -- ID scraping
+  # * :Title -- Event title
+  # * :Id_event -- Event ID on source website
+  # * :Link -- URL to Event page (Source URL)
+  # * :Description -- Event description text
+  # * :Start -- Event start
+  # * :End -- Event end
+  # * :Category -- Event category
+  #
+  # * :Venue -- Venue name
+  # * :VenueInfo -- Venue info
+  # * :Tel -- Venue Tel number
+  # * :Address -- Venue address
+  # * :Longitude -- Venue longitude
+  # * :Latitude -- Venue latitude
+  # * :LinkVenue -- URL to Venue page
+  def API_import_event!(opts={})
+	self.url = opts[:Link]
+	self.title = opts[:Link]
+	
+	venue = self.venues.find_or_create_by_url(opts[:LinkVenue])
+	venue.title = opts[:Venue]
+	venue.description = opts[:VenueInfo]
+	venue.address = opts[:Address]
+	venue.telephone = opts[:Tel]
+	venue.latitude = opts[:Latitude]
+	venue.longitude = opts[:Longitude]
+	
+	event = self.events.find_or_create_by_url(opts[:Link])
+	event.venue = venue
+	event.url = opts[:Link]
+	event.title = opts[:Title]
+	event.description = opts[:Description]
+	event.start_time = opts[:Start]
+	event.end_time = opts[:End]
+	event.source = self
+	event.description = event.description << "Category: " << opts[:Category] if (!opts[:Category].empty?)
+	
+	self.save
+	venue.save
+	event.save
   end
 
 private

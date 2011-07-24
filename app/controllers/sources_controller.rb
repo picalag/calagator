@@ -1,4 +1,5 @@
 class SourcesController < ApplicationController
+  skip_before_filter :verify_authenticity_token, :only => [:API_import_event]
   MAXIMUM_EVENTS_TO_DISPLAY_IN_FLASH = 5
   
   # Import sources
@@ -133,6 +134,20 @@ class SourcesController < ApplicationController
     @source.destroy
 
     respond_to do |format|
+      format.html { redirect_to(sources_url) }
+      format.xml  { head :ok }
+    end
+  end
+  
+  # POST /sources/API_import_event
+  # DELETE /sources/API_import_event.xml
+  def API_import_event
+	#puts params
+	
+	@source = Source.find_or_create_by_url(params[:Link])
+	@source.API_import_event!(params)
+	
+	respond_to do |format|
       format.html { redirect_to(sources_url) }
       format.xml  { head :ok }
     end
