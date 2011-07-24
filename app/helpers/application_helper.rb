@@ -11,7 +11,7 @@ module ApplicationHelper
     content.gsub('<br>','<br />')
   end
 
-  FLASH_TYPES = [:success, :failure]
+  FLASH_TYPES = [:success, :failure, :notice]
 
   def render_flash
     result = ""

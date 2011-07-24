@@ -73,7 +73,7 @@
   padding: 0.15em;
 }
 
-#flash .flash_success {
+#flash .flash_success, #flash .flash_notice {
   border: 2px solid green;
   background: #DDF5DC;
 }

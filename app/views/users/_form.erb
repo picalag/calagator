@@ -1,0 +1,17 @@
+<%= form.label :login %><br />
+<%= form.text_field :login %><br />
+<br />
+<%= form.label :password, form.object.new_record? ? nil : "Change password" %><br />
+<%= form.password_field :password %><br />
+<br />
+<%= form.label :password_confirmation %><br />
+<%= form.password_field :password_confirmation %><br />
+<br />
+<%= form.label :mail, "Email address" %><br />
+<%= form.text_field :mail %><br />
+<br />
+<%= form.label :male, "Gender" %> (checked = male)<br />
+<%= form.check_box :male %><br />
+<br />
+<%= form.label :dob, "Date of birth" %><br />
+<%= form.date_select :dob, :start_year => 1900, :end_year => Date.today.year %><br />

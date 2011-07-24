@@ -60,6 +60,12 @@ ActionController::Routing::Routes.draw do |map|
   map.theme_stylesheets '/themes/:theme/stylesheets/*filename', :action => 'stylesheets', :controller => 'theme'
   map.theme_javascript '/themes/:theme/javascript/*filename', :action => 'javascript', :controller => 'theme'
 
+  # Authentification
+  map.resource :account, :controller => "users"
+  map.resources :users
+  map.resource :user_session
+
+
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'

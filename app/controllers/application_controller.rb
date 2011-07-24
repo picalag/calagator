@@ -21,7 +21,8 @@ class ApplicationController < ActionController::Base
   layout "application"
   theme THEME_NAME # DEPENDENCY: lib/theme_reader.rb
 
-protected
+
+  protected
 
   #---[ Helpers ]---------------------------------------------------------
 
@@ -31,8 +32,8 @@ protected
   def link_class
     return @_link_class_cache ||= {
       :events => (( controller_name == 'events' ||
-                    controller_name == 'sources' ||
-                    controller_name == 'site')  && 'active'),
+            controller_name == 'sources' ||
+            controller_name == 'site')  && 'active'),
       :venues => (controller_name == 'venues'  && 'active'),
     }
   end
@@ -49,6 +50,48 @@ protected
     else
       flash[kind] = "#{message}"
     end
+  end
+
+  # Authlogic
+  helper_method :current_user_session, :current_user
+  filter_parameter_logging :password, :password_confirmation
+
+  private
+  def current_user_session
+    return @current_user_session if defined?(@current_user_session)
+    @current_user_session = UserSession.find
+  end
+
+  def current_user
+    return @current_user if defined?(@current_user)
+    @current_user = current_user_session && current_user_session.record
+  end
+
+  def require_user
+    unless current_user
+      store_location
+      flash[:failure] = "You must be logged in to access this page"
+      redirect_to new_user_session_url
+      return false
+    end
+  end
+
+  def require_no_user
+    if current_user
+      store_location
+      flash[:failure] = "You must be logged out to access this page"
+      redirect_to root_url
+      return false
+    end
+  end
+
+  def store_location
+    session[:return_to] = request.request_uri
+  end
+
+  def redirect_back_or_default(default)
+    redirect_to(session[:return_to] || default)
+    session[:return_to] = nil
   end
 end
 
