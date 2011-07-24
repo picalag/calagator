@@ -79,7 +79,7 @@ Rails::Initializer.run do |config|
   require 'settings_reader'
   SETTINGS = SettingsReader.read(
     theme_file("settings.yml"), {
-      'timezone' => 'Pacific Time (US & Canada)',
+      'timezone' => 'London',
     }
   )
 
