@@ -1,0 +1,62 @@
+<div id="content_with_sidebar">
+  <h1>My Picalag</h1>
+
+  <div class='sidebar'>
+
+    <h3 class='first'>See other events</h3>
+    <p>
+      <% form_tag request.request_uri, :method => :get do %>
+        <%= label_tag(:date, "Change date: ") %><br />
+        <%= select_date @date, :prefix => :date, :use_short_month => true %>
+        <%= submit_tag("Go") %>
+      </p>
+    <% end %>
+
+  </div>
+
+
+  <div class="contentbox">
+    <div class="title">» Most popular events</div>
+    <div class="subtitle">Top rated events list.</div>
+    <div class="content">
+      <div id="most_pop_events">
+
+        <center><%= image_tag "/images/loading.gif" %><br />Loading, please wait...</center>
+      </div>
+    </div>
+  </div>
+
+  <div class="contentbox">
+    <div class="title">» Random events</div>
+    <div class="subtitle">Discover new things thanks to random events selection.</div>
+    <div class="content">
+      <div id="random_events">
+        <center><%= image_tag "/images/loading.gif" %><br />Loading, please wait...</center>
+      </div>
+    </div>
+  </div>
+
+  <% javascript_tag do %>
+    <%= remote_function(:update => "random_events", :url => {:action => :get_random_events}) %>
+  <% end %>
+
+  <div class="contentbox">
+    <div class="title">» Content-based recommendations</div>
+    <div class="subtitle">You may like these events as their content match your profile.</div>
+    <div class="content">
+      <div id="CB_events">
+        <center><%= image_tag "/images/loading.gif" %><br />Loading, please wait...</center>
+      </div>
+    </div>
+  </div>
+
+  <div class="contentbox">
+    <div class="title">» Picalag users recommendations</div>
+    <div class="subtitle">Other people have same tastes as you !<br/>This is a list of events they found interesting.</div>
+    <div class="content">
+      <div id="CB_events">
+        <center><%= image_tag "/images/loading.gif" %><br />Loading, please wait...</center>
+      </div>
+    </div>
+  </div>
+</div>

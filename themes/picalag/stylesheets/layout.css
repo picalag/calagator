@@ -25,15 +25,18 @@ body {
 
 
 #project_title {
-    background: url('/images/head_calagator.gif') no-repeat;
     height: 31px;
     left: 40px;
-    overflow: hidden;
     position: absolute;
-    text-indent: -999px;
-    top: 25px;
+    top: 15px;
     width: 135px;
+    font-weight:normal;
+    color:#445544 !important;
+    font-size:33px;
+    font-family:georgia, serif;
+    text-shadow: 1px 1px 1px #BCF794;
 }
+
 
 #login_top {
     position: absolute;
@@ -98,8 +101,11 @@ body {
 #logged_in_top {
     font-weight: bold;
     text-align: center;
-    top: 10px;
     position: relative;
+
+    top: 5px;
+    padding: 5px;
+    border: 1px solid green;
 }
 
 #app_menu ul {
@@ -171,6 +177,10 @@ body {
     min-height: 40em;
     margin: 1em 30px 1em 40px;
     position: relative;
+}
+
+#content_with_sidebar {
+    padding-right: 200px;
 }
 
 
@@ -820,4 +830,40 @@ fieldset .help {
 .plancast-rsvp {
     font-size: 11px;
 }
+
+
+.contentbox{
+	padding:0;
+	margin:10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border:2px solid #b8c6dd;
+        float: left;
+        width: 40%;
+        min-width: 300px;
+}
+.contentbox .title {
+    background-color: #E8FBFE;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px 5px 5px 40px;
+    text-shadow: 1px 1px 1px white;
+}
+.contentbox .subtitle {
+    background-color: #F7FFF7;
+    padding: 2px;
+    padding-left: 20px;
+    border-top: 1px solid #DBE4F3;
+    border-bottom: 1px solid #DBE4F3;
+    font-style: italic;
+}
+.contentbox .content{
+	font-size:16px;
+	color: #666;
+	font-family: Tahoma, Geneva, sans-serif;
+	padding:6px;
+	line-height:24px;
+}
+
 /* @end */
