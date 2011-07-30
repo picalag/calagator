@@ -1,0 +1,32 @@
+<%
+if @recommendations.kind_of? Array
+  if @recommendations.length == 0
+  %>
+    <p>No recommendation available for you. Sorry.</p>
+  <%
+  else
+  %>
+    <ul>
+      <% @recommendations.each do |e| %>
+        <li>
+          <%= link_to e[0].title, url_for(:controller => "events", :action => "show", :id => e[0].id) %>
+          (match = <%= e[1] %> %)
+        </li>
+      <% end %>
+    </ul>
+    <div class="subtitle" style="text-align: center">
+      <%=link_to_remote "[+] Refresh and load more [+]",
+        :update => "CF_event",
+        :url => {:action => :get_CF_event_events},
+        :with => "'id_event=#{@id_event}&nb_recs=#{(@nb_recs + 5)}' + '&date[year]=+ #{@date.year}' + '&date[month]= + #{@date.month}' + '&date[day]= + #{@date.day}'",
+        :before =>  "document.getElementById('CF_event').innerHTML = '<center><img src=\"/images/loading.gif\" /><br />Loading, please wait...</center>';" %>
+    </div>
+  <%
+  end
+
+else
+%>
+  <p>Error while contacting the recommendation server</p>
+<%
+end
+%>

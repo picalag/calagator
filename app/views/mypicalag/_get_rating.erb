@@ -1,0 +1,7 @@
+<% if @r == 5 %>
+  <%= image_tag '/images/big_heart.png' %>
+<% elsif @r == -5 %>
+  <%= image_tag '/images/big_crossed_red_heart.png' %>
+<% else %>
+  <%= image_tag '/images/big_empty_heart.png' %>
+<% end %>

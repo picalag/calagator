@@ -9,16 +9,17 @@ if @recommendations.kind_of? Array
     <ul>
       <% @recommendations.each do |e| %>
         <li>
-          <%= link_to e.title, url_for(:controller => "events", :action => "show", :id => e.id) %>
+          <%= link_to e[0].title, url_for(:controller => "events", :action => "show", :id => e[0].id) %>
+          (grade = <%= e[1]%>)
         </li>
       <% end %>
     </ul>
     <div class="subtitle" style="text-align: center">
       <%=link_to_remote "[+] Refresh and load more [+]",
-        :update => "random_events",
-        :url => {:action => :get_random_events},
+        :update => "popular_events",
+        :url => {:action => :get_popular_events},
         :with => "'nb_recs= + #{(@nb_recs + 5)}' + '&date[year]=+ #{@date.year}' + '&date[month]= + #{@date.month}' + '&date[day]= + #{@date.day}'",
-        :before =>  "document.getElementById('random_events').innerHTML = '<center><img src=\"/images/loading.gif\" /><br />Loading, please wait...</center>';" %>
+        :before =>  "document.getElementById('popular_events').innerHTML = '<center><img src=\"/images/loading.gif\" /><br />Loading, please wait...</center>';" %>
     </div>
   <%
   end

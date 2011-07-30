@@ -19,12 +19,16 @@
     <div class="title">» Most popular events</div>
     <div class="subtitle">Top rated events list.</div>
     <div class="content">
-      <div id="most_pop_events">
+      <div id="popular_events">
 
         <center><%= image_tag "/images/loading.gif" %><br />Loading, please wait...</center>
       </div>
     </div>
   </div>
+
+  <% javascript_tag do %>
+    <%= remote_function(:update => "popular_events", :url => {:action => :get_popular_events}, :with => "'date[year]='+ #{@date.year} + '&date[month]=' + #{@date.month} + '&date[day]=' + #{@date.day}") %>
+  <% end %>
 
   <div class="contentbox">
     <div class="title">» Random events</div>
@@ -37,26 +41,34 @@
   </div>
 
   <% javascript_tag do %>
-    <%= remote_function(:update => "random_events", :url => {:action => :get_random_events}) %>
+    <%= remote_function(:update => "random_events", :url => {:action => :get_random_events}, :with => "'date[year]='+ #{@date.year} + '&date[month]=' + #{@date.month} + '&date[day]=' + #{@date.day}") %>
   <% end %>
 
   <div class="contentbox">
     <div class="title">» Content-based recommendations</div>
     <div class="subtitle">You may like these events as their content match your profile.</div>
     <div class="content">
-      <div id="CB_events">
+      <div id="CB_user">
         <center><%= image_tag "/images/loading.gif" %><br />Loading, please wait...</center>
       </div>
     </div>
   </div>
 
+  <% javascript_tag do %>
+    <%= remote_function(:update => "CB_user", :url => {:action => :get_CB_user_events}, :with => "'date[year]='+ #{@date.year} + '&date[month]=' + #{@date.month} + '&date[day]=' + #{@date.day}") %>
+  <% end %>
+
   <div class="contentbox">
     <div class="title">» Picalag users recommendations</div>
     <div class="subtitle">Other people have same tastes as you !<br/>This is a list of events they found interesting.</div>
     <div class="content">
-      <div id="CB_events">
+      <div id="CF_user">
         <center><%= image_tag "/images/loading.gif" %><br />Loading, please wait...</center>
       </div>
     </div>
   </div>
+  <% javascript_tag do %>
+    <%= remote_function(:update => "CF_user", :url => {:action => :get_CF_user_events}, :with => "'date[year]='+ #{@date.year} + '&date[month]=' + #{@date.month} + '&date[day]=' + #{@date.day}") %>
+  <% end %>
+
 </div>

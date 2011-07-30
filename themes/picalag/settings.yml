@@ -21,3 +21,7 @@ venues_google_map_options:
 tagcloud_exclusions:
   - ostartupskey
   - tvg
+
+# picalag Pserver
+# ex: http://localhost:8080/Picalag_Pserver/API
+pserver: 'http://localhost:8080/Picalag_Pserver'

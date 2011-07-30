@@ -858,6 +858,10 @@ fieldset .help {
     border-bottom: 1px solid #DBE4F3;
     font-style: italic;
 }
+.contentbox .subtitle a {
+    font-style: normal;
+    font-size: 75%;
+}
 .contentbox .content{
 	font-size:16px;
 	color: #666;

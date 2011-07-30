@@ -64,6 +64,17 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :account, :controller => "users"
   map.resources :users
   map.resource :user_session
+  map.resources :mypicalag, :singular => true,
+    :collection => {
+    'get_CB_event_events' => :get,
+    'get_CF_event_events' => :get,
+    'get_CB_user_events' => :get,
+    'get_CF_user_events' => :get,
+    'get_popular_events' => :get,
+    'get_random_events' => :get,
+    'get_rating' => :get,
+    'is_favorite_venue' => :get
+  }
 
 
   # Install the default routes as the lowest priority.

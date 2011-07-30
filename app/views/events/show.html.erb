@@ -12,14 +12,14 @@
       if (plan.length > 0) {
         var plan_id = plan.text().split('=')[1];
         $.getJSON("http://api.plancast.com/02/plans/show.json?jsonp=?",
-          { extensions: "attendees",
-            plan_id: plan_id },
-          function(data) {
-            if (data.attendees.length > 0) {
-              $('.attendees').append(Mustache.to_html($('#attendees-template').html(), data));
-            }
+        { extensions: "attendees",
+          plan_id: plan_id },
+        function(data) {
+          if (data.attendees.length > 0) {
+            $('.attendees').append(Mustache.to_html($('#attendees-template').html(), data));
           }
-        );
+        }
+      );
       }
     })
   </script>
@@ -39,7 +39,7 @@
       </div>
     </li>
   </ul>
-<hr />
+  <hr />
   <div id='edit_link'>
     <p>
       You can 
@@ -50,10 +50,85 @@
       this event.
     </p>
   </div>
-<hr />
+  <hr />
   <div id='metadata'>
-      <%= datestamp(@event) %>
+    <%= datestamp(@event) %>
+  </div>
+  <hr />
+  <div id="perso">
+    <h3>Do you like this event?</h3>
+    <div>
+      » Share it !<br/>
+      <!-- AddToAny BEGIN -->
+      <a class="a2a_dd" href="http://www.addtoany.com/share_save"><img src="http://static.addtoany.com/buttons/share_save_120_16.gif" width="120" height="16" border="0" alt="Share"/></a>
+      <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+      <!-- AddToAny END -->
+    </div>
+    <% if current_user %>
+      <div>
+        » Give your opinion<br/>
+        <div id="event_grade" style="float:left; position:relative; top:18px"><%= image_tag '/images/loading.gif', :width => '21px', :height=> '21px' %></div>
+        <div style="margin-left: 32px; padding-left:5px; border-left: 1px solid #66BAA9">
+          <%= link_to_remote image_tag('/images/big_heart.png', :style => "vertical-align:middle", :height => "10px", :width => "12px") + "&nbsp;I love it",
+            :update => "event_grade",
+            :url => {:controller  => :mypicalag, :action => :get_rating, :id => @event.id},
+            :with => "'rate=liked'",
+            :before =>  "document.getElementById('event_grade').innerHTML = '<img alt=\"Loading\" height=\"21px\" src=\"/images/loading.gif\" width=\"21px\" />';" %>
+          <br />
+          <%= link_to_remote image_tag('/images/big_empty_heart.png', :style => "vertical-align:middle", :height => "10px", :width => "12px") + "&nbsp;I have no opinion",
+            :update => "event_grade",
+            :url => {:controller  => :mypicalag, :action => :get_rating, :id => @event.id},
+            :with => "'rate=neutral'",
+            :before =>  "document.getElementById('event_grade').innerHTML = '<img alt=\"Loading\" height=\"21px\" src=\"/images/loading.gif\" width=\"21px\" />';" %>
+          <br />
+          <%= link_to_remote image_tag('/images/big_crossed_red_heart.png', :style => "vertical-align:middle", :height => "10px", :width => "12px") + "&nbsp;I don't like it",
+            :update => "event_grade",
+            :url => {:controller  => :mypicalag, :action => :get_rating, :id => @event.id},
+            :with => "'rate=disliked'",
+            :before =>  "document.getElementById('event_grade').innerHTML = '<img alt=\"Loading\" height=\"21px\" src=\"/images/loading.gif\" width=\"21px\" />';" %>
+        </div>
+
+
+      </div>
+
+
+      <div>
+        » Do you like the venue?<br/>
+        <div id="add_remove_favorite_venue">
+          <%= image_tag '/images/loading.gif', :width => '24px', :height=> '24px', :style => "vertical-align:middle" %>&nbsp;Loading...
+        </div>
+      </div>
+      <% javascript_tag do %>
+        <%= remote_function(:update => "add_remove_favorite_venue", :url => {:controller  => :mypicalag, :action => :is_favorite_venue, :id => @event.venue.id}) %>
+        <%= remote_function(:update => "event_grade", :url => {:controller  => :mypicalag, :action => :get_rating, :id => @event.id}) %>
+      <% end %>
+    <% end %>
   </div>
 </div>
 
 <%= render :partial => 'events/item', :locals => {:event => @event} %>
+
+<div class="contentbox">
+  <div class="title">» Content-based recommendations</div>
+  <div class="subtitle">You may like these events as their content is similar.</div>
+  <div class="content">
+    <div id="CB_event">
+      <center><%= image_tag "/images/loading.gif" %><br />Loading, please wait...</center>
+    </div>
+  </div>
+</div>
+
+<div class="contentbox">
+  <div class="title">» People who viewed this event also viewed</div>
+  <div class="subtitle">These recommendations are based on what events other people viewed.</div>
+  <div class="content">
+    <div id="CF_event">
+      <center><%= image_tag "/images/loading.gif" %><br />Loading, please wait...</center>
+    </div>
+  </div>
+</div>
+
+<% javascript_tag do %>
+  <%= remote_function(:update => "CB_event", :url => {:controller => :mypicalag, :action => :get_CB_event_events}, :with => "'id_event='+#{@event.id}+'&date[year]='+ #{@event.start_time.year} + '&date[month]=' + #{@event.start_time.month} + '&date[day]=' + #{@event.start_time.day}") %>
+  <%= remote_function(:update => "CF_event", :url => {:controller => :mypicalag, :action => :get_CF_event_events}, :with => "'id_event='+#{@event.id}+'&date[year]='+ #{@event.start_time.year} + '&date[month]=' + #{@event.start_time.month} + '&date[day]=' + #{@event.start_time.day}") %>
+<% end %>

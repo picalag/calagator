@@ -18,6 +18,30 @@
     <div class="metadata">
       <%= datestamp(@venue) %>
     </div>
+    <hr />
+    <div id="perso">
+      <h3>Do you like this venue?</h3>
+      <div>
+        » Share it !<br/>
+        <!-- AddToAny BEGIN -->
+        <a class="a2a_dd" href="http://www.addtoany.com/share_save"><img src="http://static.addtoany.com/buttons/share_save_120_16.gif" width="120" height="16" border="0" alt="Share"/></a>
+        <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+        <!-- AddToAny END -->
+      </div>
+
+      <% if current_user %>
+        <div>
+          » Manage your favorites<br/>
+          <div id="add_remove_favorite_venue">
+            <%= image_tag '/images/loading.gif', :width => '24px', :height=> '24px', :style => "vertical-align:middle" %>&nbsp;Loading...
+          </div>
+        </div>
+        <% javascript_tag do %>
+          <%= remote_function(:update => "add_remove_favorite_venue", :url => {:controller  => :mypicalag, :action => :is_favorite_venue, :id => @venue.id}) %>
+        <% end %>
+      <% end %>
+
+    </div>
   </div>
 
   <div class="location vcard<%= " closed" if @venue.closed? %>">

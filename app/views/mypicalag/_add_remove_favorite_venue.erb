@@ -1,0 +1,15 @@
+<% if @is_fav == "false" %>
+  <%= link_to_remote image_tag('/images/big_empty_star.png', :style => "vertical-align:middle") + "&nbsp;Add it to favorites",
+    :update => "add_remove_favorite_venue",
+    :url => {:controller  => :mypicalag, :action => :is_favorite_venue, :id => @id_venue},
+    :with => "'change=add'",
+    :before =>  "document.getElementById('add_remove_favorite_venue').innerHTML = '<img alt=\"Loading\" height=\"24px\" src=\"/images/loading.gif\" style=\"vertical-align:middle\" width=\"24px\" />&nbsp;Loading...';" %>
+<% elsif @is_fav == "true" %>
+  <%= link_to_remote image_tag('/images/big_star.png', :style => "vertical-align:middle") + "&nbsp;Remove from favorites",
+    :update => "add_remove_favorite_venue",
+    :url => {:controller  => :mypicalag, :action => :is_favorite_venue, :id => @id_venue},
+    :with => "'change=del'",
+    :before =>  "document.getElementById('add_remove_favorite_venue').innerHTML = '<img alt=\"Loading\" height=\"24px\" src=\"/images/loading.gif\" style=\"vertical-align:middle\" width=\"24px\" />&nbsp;Loading...';" %>
+<% else %>
+  ...Error...
+<% end %>

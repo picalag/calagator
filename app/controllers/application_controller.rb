@@ -35,6 +35,7 @@ class ApplicationController < ActionController::Base
             controller_name == 'sources' ||
             controller_name == 'site')  && 'active'),
       :venues => (controller_name == 'venues'  && 'active'),
+      :mypicalag => (controller_name == 'mypicalag' && 'active')
     }
   end
   helper_method :link_class

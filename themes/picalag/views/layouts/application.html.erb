@@ -57,6 +57,7 @@
             <ul>
               <li class='<%=link_class[:events]%>'><%= link_to "Events", events_path %></li>
               <li class='<%=link_class[:venues]%>'><%= link_to "Venues", venues_path %></li>
+              <li class='<%=link_class[:mypicalag]%>'><%= link_to "My Picalag", mypicalag_path %></li>
             </ul>
           </div>
           <div id='project_menu'>
@@ -93,6 +94,7 @@
       <%= render(:partial => 'events/subnav') if link_class[:events] == 'active' %>
       <%= render(:partial => 'venues/subnav') if link_class[:venues] == 'active' %>
       <%= render(:partial => 'sources/subnav') if link_class[:import] == 'active' %>
+      <%= render(:partial => 'mypicalag/subnav') if link_class[:mypicalag] == 'active' %>
 
       <div id="content">
 <%# flash[:success] = "yay"; flash[:failure] = "meh" %>
