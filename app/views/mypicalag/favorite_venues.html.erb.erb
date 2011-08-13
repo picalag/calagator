@@ -1,10 +1,72 @@
-<ul>
-  <% for venue in @venues %>
-    <li>
-      <%= link_to(cleanse(venue.title), venue_url(venue)) %>
-      <% if venue.has_full_address? %>
-        <p class='detail'><%= cleanse venue.full_address %></p>
-      <% end %>
-    </li>
+<div id="content_with_sidebar">
+  <h1>My favorite venues</h1>
+
+  <div class='sidebar'>
+
+    <h3 class='first'>What's on?</h3>
+    <p>
+      <% form_tag request.request_uri, :method => :get do %>
+        <%= label_tag(:date, "Select a date: ") %><br />
+        <%= select_date @date, :prefix => :date, :use_short_month => true %>
+        <%= submit_tag("Go") %>
+      </p>
+    <% end %>
+
+  </div>
+
+
+  <div id='venues_search_results'>
+    <% if @venues.size == 0 %>
+      No favorite venues
+    <% else %>
+      <ul>
+        <% for venue_events in @venues %>
+          <%  venue = venue_events[0]
+          events = venue_events[1] %>
+          <li>
+            <%= link_to(cleanse(venue.title), venue_url(venue), :style => "font-weight:bold; font-size:20px; text-decoration:underline") %>
+            <% if venue.has_full_address? %>
+              <p class='detail'><%= cleanse venue.full_address %></p>
+            <% end %>
+            <% unless events.blank? %>
+              <%= render :partial => 'events/list', :locals => { :events => events } %>
+            <% else %>
+              <p class='detail'>No event for this date</p>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+
+  <div class="contentbox">
+    <div class="title">» Most popular venues</div>
+    <div class="subtitle">Top venues list</div>
+    <div class="content">
+      <div id="popular_venues">
+
+        <center><%= image_tag "/images/loading.gif" %><br />Loading, please wait...</center>
+      </div>
+    </div>
+  </div>
+
+  <% javascript_tag do %>
+    <%= remote_function(:update => "popular_venues", :url => {:action => :get_popular_venues}) %>
   <% end %>
-</ul>
+
+  <div class="contentbox">
+    <div class="title">» Venues you may like</div>
+    <div class="subtitle">These recommendations are based on others favorite list</div>
+    <div class="content">
+      <div id="rec_venues">
+
+        <center><%= image_tag "/images/loading.gif" %><br />Loading, please wait...</center>
+      </div>
+    </div>
+  </div>
+
+  <% javascript_tag do %>
+    <%= remote_function(:update => "rec_venues", :url => {:action => :get_rec_venues}) %>
+  <% end %>
+
+</div>

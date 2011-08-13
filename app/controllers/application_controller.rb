@@ -21,10 +21,17 @@ class ApplicationController < ActionController::Base
   layout "application"
   theme THEME_NAME # DEPENDENCY: lib/theme_reader.rb
 
-
   protected
 
   #---[ Helpers ]---------------------------------------------------------
+
+  def log_picalag(msg)
+    logfile = File.open('log/picalag.log', 'a')
+    picalag_log = PicalagLogger.new(logfile)
+    picalag_log.info msg
+    logfile.flush
+  end
+  helper_method :log_picalag
 
   # Returns a data structure used for telling the CSS menu which part of the
   # site the user is on. The structure's keys are the symbol names of resources
@@ -52,6 +59,27 @@ class ApplicationController < ActionController::Base
       flash[kind] = "#{message}"
     end
   end
+
+  
+  # this helper checks if pserver is running with a "ping" request
+  helper_method :is_pserver_up
+  def is_pserver_up
+    begin
+      res = Net::HTTP.post_form(URI.parse(SETTINGS.pserver + '/ping'), {})
+
+      case res
+      when Net::HTTPSuccess
+        return true
+      else
+        return false
+      end
+    rescue
+      # no connection with the server
+      return false
+    end
+    return false
+  end
+
 
   # Authlogic
   helper_method :current_user_session, :current_user

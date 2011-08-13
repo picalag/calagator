@@ -47,7 +47,16 @@
       <link rel="apple-touch-icon" href="/images/site-icon.png" />
   </head>
   <body class="<%= "#{controller.controller_name}_#{action_name}" %> <%= "#{controller.controller_name}_controller" %> <%= %w[new create edit update].include?(action_name) ? "#{controller.controller_name}_change" : "" %>">
-
+    <script type="text/javascript">
+      function log_picalag(msg) {
+      <% if current_user %>
+        <%= remote_function(
+          :url => {:controller  => :mypicalag, :action => :log_picalag},
+          :with => "'msg='+msg"
+        ) %>
+      <% end %>
+      }
+    </script>
     <div id="outer">
       <div id="global_header">
         <a href="/" id="project_title"><%= SETTINGS.name %></a>
@@ -57,7 +66,9 @@
             <ul>
               <li class='<%=link_class[:events]%>'><%= link_to "Events", events_path %></li>
               <li class='<%=link_class[:venues]%>'><%= link_to "Venues", venues_path %></li>
-              <li class='<%=link_class[:mypicalag]%>'><%= link_to "My Picalag", mypicalag_path %></li>
+              <% if current_user %>
+                <li class='<%=link_class[:mypicalag]%>'><%= link_to "My Picalag", mypicalag_path %></li>
+              <% end %>
             </ul>
           </div>
           <div id='project_menu'>

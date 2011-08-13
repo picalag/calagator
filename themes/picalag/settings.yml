@@ -24,4 +24,5 @@ tagcloud_exclusions:
 
 # picalag Pserver
 # ex: http://localhost:8080/Picalag_Pserver/API
-pserver: 'http://localhost:8080/Picalag_Pserver'
+#pserver: 'http://localhost:8080/Picalag_Pserver'
+pserver: 'http://192.168.1.106:8080/TestDB/API'

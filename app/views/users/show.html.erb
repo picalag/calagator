@@ -34,4 +34,5 @@
 </p>
 
 
-<%= link_to 'Edit', edit_account_path %>
+<%= link_to 'Edit details', edit_account_path %><br />
+<%= link_to "Delete account", account_url(@user), :method => :delete, :confirm => "Are you sure?" %>

@@ -37,6 +37,11 @@ class SourcesController < ApplicationController
         s << "</ul>"
         flash[:success] = s
 
+        @events.each do |event|
+          Event.add_new_event_to_pserver(event.id)
+          Venue.add_new_venue_to_pserver(event.venue.id)
+        end
+
         format.html { redirect_to events_path }
         format.xml  { render :xml => @source, :events => @events }
       else
@@ -145,8 +150,10 @@ class SourcesController < ApplicationController
 	#puts params
 	
 	@source = Source.find_or_create_by_url(params[:Link])
-	@source.API_import_event!(params)
-	
+	imported_event, imported_venue = @source.API_import_event!(params)
+	Event.add_new_event_to_pserver(imported_event.id)
+  Venue.add_new_venue_to_pserver(imported_venue.id)
+
 	respond_to do |format|
       format.html { redirect_to(sources_url) }
       format.xml  { head :ok }

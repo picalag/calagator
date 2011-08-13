@@ -39,7 +39,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # Normal controllers
   map.resources :events, :collection => {'duplicates' => :get, 'squash_multiple_duplicates' => :post, 'search' => :get}, :member => {'clone' => :get}
-  map.resources :sources, :collection => { :import => :put }
+  map.resources :sources, :collection => { :import => :put, 'API_import_event' => :post }
   map.resources :venues, :collection => {'duplicates' => :get, 'squash_multiple_duplicates' => :post, 'map' => :get}
   map.resources :versions, :as => 'recent_changes'
 
@@ -73,7 +73,11 @@ ActionController::Routing::Routes.draw do |map|
     'get_popular_events' => :get,
     'get_random_events' => :get,
     'get_rating' => :get,
-    'is_favorite_venue' => :get
+    'is_favorite_venue' => :get,
+    'favorite_venues' => :get,
+    'get_popular_venues' => :get,
+    'get_rec_venues' => :get,
+    'log_picalag' => :get
   }
 
 

@@ -1,0 +1,34 @@
+<%
+if @recommendations.kind_of? Array
+  if @recommendations.length == 0
+  %>
+    <p>No recommendation available for you. Sorry.</p>
+  <%
+  else
+  %>
+    <ul>
+      <% id_link = 0 %>
+      <% @recommendations.each do |v| %>
+        <li>
+          <%= link_to v[0].title, url_for(:controller => "venues", :action => "show", :id => v[0].id, :log => "pop_venue|||#{(current_user ? current_user.id.to_s : 'no')}|||#{id_link}") %>
+          (<%= v[1]%> fan<%= v[1].to_i == 1 ? '' : 's' %>)
+        </li>
+        <% id_link = id_link + 1 %>
+      <% end %>
+    </ul>
+    <div class="subtitle" style="text-align: center">
+      <%=link_to_remote "[+] Refresh and load more [+]",
+        :update => "popular_venues",
+        :url => {:action => :get_popular_venues},
+        :with => "'nb_recs= + #{(@nb_recs + 5)}'",
+        :before =>  "document.getElementById('popular_venues').innerHTML = '<center><img src=\"/images/loading.gif\" /><br />Loading, please wait...</center>';" %>
+    </div>
+  <%
+  end
+
+else
+%>
+  <p>Error while contacting the recommendation server</p>
+<%
+end
+%>

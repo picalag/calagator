@@ -72,6 +72,7 @@ class Venue < ActiveRecord::Base
   named_scope :with_public_wifi, :conditions => { :wifi   => true }
   named_scope :in_business, :conditions      => { :closed => false }
   named_scope :out_of_business, :conditions  => { :closed  => true }
+  named_scope :limit, lambda { |num| { :limit => num } }
 
   #===[ Instantiators ]===================================================
 
@@ -109,6 +110,22 @@ class Venue < ActiveRecord::Base
     end
 
     return venue
+  end
+
+  #---[ Picalag ]---------------------------------------------------------
+
+  def self.add_new_venue_to_pserver(id)
+    v = Venue.find(id)
+    arguments = {
+      "id_venue" => v.id
+    }
+
+    begin
+      Net::HTTP.post_form(URI.parse(SETTINGS.pserver + '/post_venue'), arguments)
+    rescue Errno::ECONNREFUSED => ex
+      # no connection with the server... ignore
+      puts "add_new_venue_to_pserver connection error"
+    end
   end
 
   #===[ Finders ]=========================================================

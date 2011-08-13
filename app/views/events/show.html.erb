@@ -29,11 +29,24 @@
 
 <div id="event_sidebar" class='single_view_right sidebar'>
   <h3 class='first'>Export to</h3>
+  <script type="text/javascript">
+    // export grade
+    function rate_export() {
+      <% if current_user %>
+          <%= remote_function(
+               :update => "event_grade",
+               :url => {:controller  => :mypicalag, :action => :get_rating, :id => @event.id},
+               :with => "'rate=added'",
+               :before =>  "document.getElementById('event_grade').innerHTML = '<img alt=\"Loading\" height=\"21px\" src=\"/images/loading.gif\" width=\"21px\" />';"
+               ) %>
+      <% end %>
+    }
+  </script>
   <ul>
-    <li><%= link_to "Google Calendar", google_event_export_link(@event), :id => "google_calendar_export", :target => "_blank" %></li>
-    <li><%= link_to 'iCalendar file', "#{event_url(@event)}.ics" %></li>
+    <li><%= link_to "Google Calendar", google_event_export_link(@event), :id => "google_calendar_export", :target => "_blank", :onclick => "rate_export()" %></li>
+    <li><%= link_to 'iCalendar file', "#{event_url(@event)}.ics", :onclick => "rate_export()" %></li>
     <li>
-      <%= link_to_function 'hCalendar markup', '$("#hcal_field").toggle()' %>
+      <%= link_to_function 'hCalendar markup', '$("#hcal_field").toggle()', :onclick => "rate_export()" %>
       <div id="hcal_field" style="display: none;">
         <%= text_area_tag 'hCalendar', h(@show_hcal), :rows => 10, :cols => 80 %>
       </div>
@@ -60,9 +73,40 @@
     <div>
       » Share it !<br/>
       <!-- AddToAny BEGIN -->
-      <a class="a2a_dd" href="http://www.addtoany.com/share_save"><img src="http://static.addtoany.com/buttons/share_save_120_16.gif" width="120" height="16" border="0" alt="Share"/></a>
-      <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+      <a class="a2a_dd" href="http://www.addtoany.com/share_save">
+	    <img src="http://static.addtoany.com/buttons/share_save_171_16.png" border="0" alt="Share"/>
+	</a>
+
+
+      <% if current_user %>
+	<script type="text/javascript">
+	var events_demo = document.getElementById('events_demo');
+
+	// A custom "onReady" handler for AddToAny
+	function my_addtoany_onready() {
+	    // nothing
+	}
+
+	function my_addtoany_onshare(data) {
+             <%= remote_function(
+               :update => "event_grade",
+               :url => {:controller  => :mypicalag, :action => :get_rating, :id => @event.id},
+               :with => "'rate=shared'",
+               :before =>  "document.getElementById('event_grade').innerHTML = '<img alt=\"Loading\" height=\"21px\" src=\"/images/loading.gif\" width=\"21px\" />';"
+               ) %>
+          }
+
+	// Setup AddToAny "onReady" and "onShare" callback functions
+	var a2a_config = {
+	    tracking_callback: {ready: my_addtoany_onready, share: my_addtoany_onshare}
+	};
+	</script>
+        <% end %>
+	<script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+
+
       <!-- AddToAny END -->
+
     </div>
     <% if current_user %>
       <div>
@@ -78,7 +122,7 @@
           <%= link_to_remote image_tag('/images/big_empty_heart.png', :style => "vertical-align:middle", :height => "10px", :width => "12px") + "&nbsp;I have no opinion",
             :update => "event_grade",
             :url => {:controller  => :mypicalag, :action => :get_rating, :id => @event.id},
-            :with => "'rate=neutral'",
+            :with => "'rate=viewed'",
             :before =>  "document.getElementById('event_grade').innerHTML = '<img alt=\"Loading\" height=\"21px\" src=\"/images/loading.gif\" width=\"21px\" />';" %>
           <br />
           <%= link_to_remote image_tag('/images/big_crossed_red_heart.png', :style => "vertical-align:middle", :height => "10px", :width => "12px") + "&nbsp;I don't like it",

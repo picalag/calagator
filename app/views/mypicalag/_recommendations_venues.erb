@@ -1,0 +1,47 @@
+<%
+if @recommendations.kind_of? Array
+  if @recommendations.length == 0
+  %>
+    <p>No recommendation available for you. Sorry.</p>
+  <%
+  else
+  %>
+    <ul>
+      <% id_link = 0 %>
+      <% @recommendations.each do |v| %>
+        <li>
+          <%= link_to v[0].title, url_for(:controller => "venues", :action => "show", :id => v[0].id, :log => "CF_venue|||#{(current_user ? current_user.id.to_s : 'no')}|||#{id_link}") %>
+          <% if v[1].size != 0 %>
+            <br />
+            (similar to
+            <%
+            i = 0
+            v[1].each do |s|
+            %>
+              <%= link_to s.title, url_for(:controller => "venues", :action => "show", :id => s.id) %><%= i < (v[1].size-1) ? (i == v[1].size-2 ? ' and ' : ',&nbsp;') : '' %>
+              <%
+              i = i+1
+            end
+          %>
+            )
+          <%  end %>
+        </li>
+        <% id_link = id_link + 1 %>
+      <% end %>
+    </ul>
+    <div class="subtitle" style="text-align: center">
+      <%=link_to_remote "[+] Refresh and load more [+]",
+        :update => "rec_venues",
+        :url => {:action => :get_rec_venues},
+        :with => "'nb_recs= + #{(@nb_recs + 5)}'",
+        :before =>  "document.getElementById('rec_venues').innerHTML = '<center><img src=\"/images/loading.gif\" /><br />Loading, please wait...</center>';" %>
+    </div>
+  <%
+  end
+
+else
+%>
+  <p>Error while contacting the recommendation server</p>
+<%
+end
+%>

@@ -132,6 +132,28 @@ class Event < ActiveRecord::Base
     end
   end
 
+  #---[ Picalag ]---------------------------------------------------------
+
+  def self.add_new_event_to_pserver(id)
+    e = Event.find(id)
+    arguments = {
+      "id_event" => e.id,
+      "title" => e.title,
+      "description" => e.description,
+      "venue" => e.venue.title,
+      "id_venue" => e.venue_id,
+      "date" => e.start_time.strftime("%Y-%m-%d"),
+      "tags" => e.tag_list
+    }
+
+    begin
+      Net::HTTP.post_form(URI.parse(SETTINGS.pserver + '/post_event'), arguments)
+    rescue Errno::ECONNREFUSED => ex
+      # no connection with the server... ignore
+      puts "add_new_event_to_pserver connection error"
+    end
+  end
+
   #---[ Queries ]---------------------------------------------------------
 
   # Associate this event with the +venue+. The +venue+ can be given as a Venue
@@ -139,12 +161,12 @@ class Event < ActiveRecord::Base
   def associate_with_venue(venue)
     venue = \
       case venue
-      when Venue    then venue
-      when NilClass then nil
-      when String   then Venue.find_or_initialize_by_title(venue)
-      when Fixnum   then Venue.find(venue)
-      else raise TypeError, "Unknown type: #{venue.class}"
-      end
+    when Venue    then venue
+    when NilClass then nil
+    when String   then Venue.find_or_initialize_by_title(venue)
+    when Fixnum   then Venue.find(venue)
+    else raise TypeError, "Unknown type: #{venue.class}"
+    end
 
     if venue && ((self.venue && self.venue != venue) || (!self.venue))
       # Set venue if one is provided and it's different than the current, or no venue is currently set.
@@ -295,13 +317,13 @@ class Event < ActiveRecord::Base
   # * :current => Limit results to only current events? Defaults to false.
   def self.search_tag_grouped_by_currentness(tag, opts={})
     case opts[:order]
-      when 'name', 'title'
-        opts[:order] = 'events.title'
-      when 'date'
-        opts[:order] = 'events.start_time'
-      when 'venue'
-        opts[:order] = 'venues.title'
-        opts[:include] = :venue
+    when 'name', 'title'
+      opts[:order] = 'events.title'
+    when 'date'
+      opts[:order] = 'events.start_time'
+    when 'venue'
+      opts[:order] = 'venues.title'
+      opts[:include] = :venue
     end
 
     result = self.group_by_currentness(self.tagged_with(tag, opts))
@@ -361,7 +383,7 @@ class Event < ActiveRecord::Base
 <abbr class="dtstart" title="#{start_time.to_s(:yyyymmdd)}">#{start_time.to_s(:long_date).gsub(/\b[0](\d)/, '\1')}</abbr>,
 at the <span class="location">#{venue && venue.title}</span>
 </div>
-EOF
+    EOF
   end
 
   # Returns an iCalendar string representing this Event.
@@ -540,7 +562,7 @@ EOF
     end
   end
 
-protected
+  protected
 
   def end_time_later_than_start_time
     if start_time && end_time && end_time < start_time

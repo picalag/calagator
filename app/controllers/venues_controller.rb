@@ -65,6 +65,10 @@ class VenuesController < ApplicationController
     @page_title = @venue.title
     @events = @venue.find_future_events
 
+    if params[:log]
+      log_picalag(params[:log].to_s)
+    end
+    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @venue }
@@ -102,6 +106,7 @@ class VenuesController < ApplicationController
     respond_to do |format|
       if !evil_robot && @venue.save
         flash[:success] = 'Venue was successfully created.'
+        Venue.add_new_venue_to_pserver(params[:id])
         format.html { redirect_to(@venue) }
         format.xml  { render :xml => @venue, :status => :created, :location => @venue }
       else
@@ -126,6 +131,8 @@ class VenuesController < ApplicationController
         flash[:success] = 'Venue was successfully updated.'
         format.html { 
           if(!params[:from_event].blank?)
+            Event.add_new_event_to_pserver(params[:from_event])
+            Venue.add_new_venue_to_pserver(params[:id])
             redirect_to(event_url(params[:from_event]))
           else
             redirect_to(@venue)

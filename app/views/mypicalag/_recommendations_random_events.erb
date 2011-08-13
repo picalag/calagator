@@ -7,10 +7,12 @@ if @recommendations.kind_of? Array
   else
   %>
     <ul>
+      <% id_link = 0 %>
       <% @recommendations.each do |e| %>
         <li>
-          <%= link_to e.title, url_for(:controller => "events", :action => "show", :id => e.id) %>
+          <%= link_to e.title, url_for(:controller => "events", :action => "show", :id => e.id, :log => "rand_event|||#{(current_user ? current_user.id.to_s : 'no')}|||#{id_link}") %>
         </li>
+        <% id_link = id_link + 1 %>
       <% end %>
     </ul>
     <div class="subtitle" style="text-align: center">

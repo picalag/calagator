@@ -51,6 +51,20 @@ class EventsController < ApplicationController
     @show_hcal = render_to_string :partial => 'hcal.html.erb',
         :locals => { :event => @event, :show_year => true }
 
+
+    if current_user
+      arguments = {
+        'id_user' => current_user.id.to_s,
+        'id_event' => @event.id.to_s
+      }
+      Net::HTTP.post_form(URI.parse(SETTINGS.pserver + '/view_event'), arguments)
+    end
+
+    if params[:log]
+      log_picalag(params[:log].to_s)
+    end
+
+
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml  => @event.to_xml(:include => :venue) }
@@ -99,6 +113,7 @@ class EventsController < ApplicationController
             flash[:success] += " Please tell us more about where it's being held."
             redirect_to(edit_venue_url(@event.venue, :from_event => @event.id))
           else
+            Event.add_new_event_to_pserver(@event.id)
             redirect_to(@event)
           end
         }
