@@ -17,6 +17,9 @@ class EventsController < ApplicationController
 
     @start_date = date_or_default_for(:start)
     @end_date = date_or_default_for(:end)
+    if(params[:page])
+      @page = params[:page].to_i
+    end
     @events_deferred = lambda {
       params[:date] ?
         Event.find_by_dates(@start_date, @end_date, :order => order) :

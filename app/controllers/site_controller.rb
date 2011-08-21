@@ -10,6 +10,15 @@ class SiteController < ApplicationController
   end
 
   def index
+    if(params[:page_today])
+      @page_today = params[:page_today].to_i
+    end
+    if(params[:page_tomorrow])
+      @page_tomorrow = params[:page_tomorrow].to_i
+    end
+    if(params[:page_later])
+      @page_later = params[:page_later].to_i
+    end
     @times_to_events_deferred = lambda { Event.select_for_overview }
     @tagcloud_items_deferred = lambda { Tag.for_tagcloud }
   end

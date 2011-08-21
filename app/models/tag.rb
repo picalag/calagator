@@ -64,7 +64,7 @@ class Tag < ActiveRecord::Base
   # * :tag => The tag model instance.
   # * :count => The count of matching taggings for this tag.
   # * :level => The tag cloud level, the higher the count, the higher the level.
-  def self.for_tagcloud(type=Event, minimum_taggings=20, levels=5)
+  def self.for_tagcloud(type=Event, minimum_taggings=200, levels=5)
     exclusions = SETTINGS.tagcloud_exclusions || ['']
     counts_and_tags = []
     benchmark("Tag::for_tagcloud") do

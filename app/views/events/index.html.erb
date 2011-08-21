@@ -1,51 +1,106 @@
 <% tabindex_on '#search_field' %>
 
 <% cache_if(@perform_caching, CacheObserver.daily_key_for("events_index", request)) do %>
-<% @events ||= @events_deferred.call %>
-<div id='list_description'>
-  <h2>Viewing <strong><%= @events.size %></strong>
-  <%= params[:date] ? 'filtered' : 'future' %> events
-  <%= events_sort_label(params[:order]) %></h2>
-</div>
-
-<div id='list_filters' class='sidebar'>
-  
-  <h3 class='first'>Filter by date</h3>
-
-  <% form_tag events_url, :method => 'get' do  -%>
-  <div id="date_filter">
-    <div id='start_calendar'>
-      <label for='date_start'>From</label>
-      <%= text_field_tag 'date[start]', @start_date.strftime('%Y-%m-%d'), :id => 'date_start', :class => 'date_picker' %>
-    </div>
-    <div id='end_calendar'>
-      <label for='date_end'>To</label>
-      <%= text_field_tag 'date[end]', @end_date.strftime('%Y-%m-%d'), :id => 'date_end', :class => 'date_picker' %>
-    </div>
-    <div>
-      <label for="commit">&nbsp;</label>
-      <%= submit_tag 'Filter' %>
-      <span class="clear_filter"><%= link_to 'Reset', events_url %></span>
-    </div>
+  <% @events ||= @events_deferred.call %>
+  <div id='list_description'>
+    <h2>Viewing <strong><%= @events.size %></strong>
+      <%= params[:date] ? 'filtered' : 'future' %> events
+      <%= events_sort_label(params[:order]) %></h2>
   </div>
-  <% end %>
-  
-  <h3>Subscribe to</h3>
-  <ul>
-    <li><%= link_to "iCalendar feed", url_for(:action => "index", :protocol => "webcal", :only_path => false)+".ics" %></li>
-    <li><%= link_to "Atom feed", events_url(:format => "atom") %></li>
-  </ul>
 
-  <h3>Export to</h3>
-  <ul>
-    <li><%= link_to "iCalendar file", events_url(:format => "ics") %></li>
-    <li><%= link_to "Google Calendar", "http://www.google.com/calendar/render?cid="+events_url(:format => 'ics') %></li>
-    <li><%= link_to "My Yahoo!", "http://add.my.yahoo.com/content?.intl=us&amp;url="+events_url(:format => 'ics') %></li>
-  </ul>
-  
-</div>
+  <div id='list_filters' class='sidebar'>
 
-<div id='list_items'>
-  <%= render :partial => 'events/table', :locals => { :events => @events } %>
-</div>
+    <h3 class='first'>Filter by date</h3>
+
+    <% form_tag events_url, :method => 'get' do  -%>
+      <div id="date_filter">
+        <div id='start_calendar'>
+          <label for='date_start'>From</label>
+          <%= text_field_tag 'date[start]', @start_date.strftime('%Y-%m-%d'), :id => 'date_start', :class => 'date_picker' %>
+        </div>
+        <div id='end_calendar'>
+          <label for='date_end'>To</label>
+          <%= text_field_tag 'date[end]', @end_date.strftime('%Y-%m-%d'), :id => 'date_end', :class => 'date_picker' %>
+        </div>
+        <div>
+          <label for="commit">&nbsp;</label>
+          <%= submit_tag 'Filter' %>
+          <span class="clear_filter"><%= link_to 'Reset', events_url %></span>
+        </div>
+      </div>
+    <% end %>
+
+    <h3>Subscribe to</h3>
+    <ul>
+      <li><%= link_to "iCalendar feed", url_for(:action => "index", :protocol => "webcal", :only_path => false)+".ics" %></li>
+      <li><%= link_to "Atom feed", events_url(:format => "atom") %></li>
+    </ul>
+
+    <h3>Export to</h3>
+    <ul>
+      <li><%= link_to "iCalendar file", events_url(:format => "ics") %></li>
+      <li><%= link_to "Google Calendar", "http://www.google.com/calendar/render?cid="+events_url(:format => 'ics') %></li>
+      <li><%= link_to "My Yahoo!", "http://add.my.yahoo.com/content?.intl=us&amp;url="+events_url(:format => 'ics') %></li>
+    </ul>
+
+  </div>
+
+  <div id='list_items'>
+    <% @page||=1 %>
+    
+    <%= render :partial => 'events/table', :locals => { :events => @events[((@page-1)*20),20] } %>
+
+    <%
+    page_count = @events.length/20 + 1
+    if @events.length%20 == 0
+      page_count = page_count - 1
+    end
+  %>
+    <% if page_count > 1 -%>
+      <div class="pagination">
+        <ul>
+          <% if @page != 1 -%>
+            <li>
+              <%= link_to '&#171; Previous', { :page => (@page - 1) }, :class=>"prevnext" %>
+            </li>
+          <% else -%>
+            <li>&#171; Previous</li>
+          <% end -%>
+
+          <% for n in (1..page_count) %>
+            <% if(n == 1) %>
+              <% if(@page == 1) %>
+                <li><%= link_to n, {:page => n}, :class => "currentpage" %></li>
+              <% else %>
+                <li><%= link_to n, :page => n %></li>
+              <% end %>
+            <% elsif (n == page_count) %>
+              <% if(@page == page_count) %>
+                <li><%= link_to n, {:page => n}, :class => "currentpage" %></li>
+              <% else %>
+                <li><%= link_to n, :page => n %></li>
+              <% end %>
+            <% else %>
+              <% if ((n >= (@page - 2)) && (n <= (@page+2)) && (n != 1) && (n != page_count)) %>
+                <% if(@page == n) %>
+                  <li><%= link_to n, {:page => n}, :class => "currentpage" %></li>
+                <% else %>
+                  <li><%= "..." if ((n == (@page - 2)) && (@page - 2 != 2)) %><%= link_to n, :page => n %><%= "..." if ((n == (@page+2)) && (@page + 2 != page_count-1)) %></li>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+
+          <% if @page != page_count -%>
+            <li class="nextpage">
+              <%=  link_to 'Next &#187;', { :page => (@page + 1) }, :class => "prevnext" %>
+            </li>
+          <% else -%>
+            <li class="disablepage">Next &#187;</li>
+          <% end -%>
+        </ul>
+      </div>
+    <% end -%>
+
+  </div>
 <% end %>

@@ -145,7 +145,7 @@ class SourcesController < ApplicationController
   end
   
   # POST /sources/API_import_event
-  # DELETE /sources/API_import_event.xml
+  # POST /sources/API_import_event.xml
   def API_import_event
 	#puts params
 	
