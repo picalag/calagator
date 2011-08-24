@@ -191,7 +191,7 @@ class Event < ActiveRecord::Base
     today = Time.today
     tomorrow = today + 1.day
     after_tomorrow = tomorrow + 1.day
-    future_cutoff = today + 2.weeks
+    future_cutoff = tomorrow + 1.day
 
     times_to_events = {
       :today    => [],

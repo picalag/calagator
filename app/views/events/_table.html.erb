@@ -22,8 +22,8 @@ rowspans = calculate_rowspans(events)
         <%= events_sort_link('name') -%>,
         <%= events_sort_link('venue') -%>
         <%- if scores -%>,
-        <%= events_sort_link('score') -%>
-        <%- end -%>, 
+          <%= events_sort_link('score') -%>
+        <%- end -%>,
         <%= events_sort_link(nil) -%>
       </th>
     </tr>
@@ -33,13 +33,13 @@ rowspans = calculate_rowspans(events)
       <% events.each_with_index do |event, index| %>
         <tr class='vevent'>
           <% if rowspans[index] > 0 %>
-          <td class='date' rowspan="<%=rowspans[index]%>">
-            <div class='day_of_week <%= today_tomorrow_or_weekday(event).downcase -%>'>
-              <%= today_tomorrow_or_weekday(event) %>
-            </div>
-            <% show_year = event.start_time.year != Time.now.year %>
-            <%= datetime_format(event.start_time,'%b %d') -%><%= ", "+datetime_format(event.start_time,'%Y') if show_year %>
-          </td>
+            <td class='date' rowspan="<%=rowspans[index]%>">
+              <div class='day_of_week <%= today_tomorrow_or_weekday(event).downcase -%>'>
+                <%= today_tomorrow_or_weekday(event) %>
+              </div>
+              <% show_year = event.start_time.year != Time.now.year %>
+              <%= datetime_format(event.start_time,'%b %d') -%><%= ", "+datetime_format(event.start_time,'%Y') if show_year %>
+            </td>
           <% end %>
           <td class='event_summary'>
             <a class='summary' href='<%= url_for event_url(event) %>' name='<%= "event-#{event.id}" %>' id='<%= "event-#{event.id}" %>'><%= cleanse event.title.strip_html %></a><br />
@@ -47,6 +47,21 @@ rowspans = calculate_rowspans(events)
             <% if event.venue && !event.venue.title.blank? %>
               <a class='location' href='<%= url_for venue_url(event.venue) %>'><%= cleanse event.venue.title.strip_html -%></a>
             <% end -%>
+            <%
+            category = ""
+            event.tags.map {|tag|
+              puts tag.name << "\n"
+              case tag.name.to_s.strip
+              when "cinema", "music", "arts", "comedy", "out", "clubs", "theatre", "opera", "dance", "ballet"
+                category = tag
+                category.name.strip!
+                break;
+              end
+            }
+          %>
+            <% unless category.blank? %>
+              <br />Category: <%= tag_link(:event, category) %>
+            <% end %>
             <% if !event.description.blank? %>
               <div class='description'>
                 <%= format_description(event.description) -%>

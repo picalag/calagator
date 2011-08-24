@@ -297,7 +297,7 @@ protected
 
   # Return the default end date.
   def default_end_date
-    Time.today + 3.months
+    Time.today + 3.days
   end
 
   # Return a date parsed from user arguments or a default date. The +kind+

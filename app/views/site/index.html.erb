@@ -129,62 +129,6 @@
     <% end -%>
   </div>
   <div id='recently_added_events'>
-    <h3>Next two weeks</h3>
-    <% @page_later||=1 %>
-    <%= render 'events/list', :events => @times_to_events[:later][((@page_later-1)*15),15] %>
-        <%
-    page_count = @times_to_events[:later].length/10 + 1
-    if @times_to_events[:later].length%10 == 0
-      page_count = page_count - 1
-    end
-  %>
-    <% if page_count > 1 -%>
-      <div class="pagination">
-        <ul>
-          <% if @page_later != 1 -%>
-            <li>
-              <%= link_to '&#171; Previous', { :page_later => (@page_later - 1) }, :class=>"prevnext" %>
-            </li>
-          <% else -%>
-            <li>&#171; Previous</li>
-          <% end -%>
-
-          <% for n in (1..page_count) %>
-            <% if(n == 1) %>
-              <% if(@page_later == 1) %>
-                <li><%= link_to n, {:page_later => n}, :class => "currentpage" %></li>
-              <% else %>
-                <li><%= link_to n, :page_later => n %></li>
-              <% end %>
-            <% elsif (n == page_count) %>
-              <% if(@page_later == page_count) %>
-                <li><%= link_to n, {:page_later => n}, :class => "currentpage" %></li>
-              <% else %>
-                <li><%= link_to n, :page_later => n %></li>
-              <% end %>
-            <% else %>
-              <% if ((n >= (@page_later - 2)) && (n <= (@page_later+2)) && (n != 1) && (n != page_count)) %>
-                <% if(@page_later == n) %>
-                  <li><%= link_to n, {:page_later => n}, :class => "currentpage" %></li>
-                <% else %>
-                  <li><%= "..." if ((n == (@page_later - 2)) && (@page_later - 2 != 2)) %><%= link_to n, :page_later => n %><%= "..." if ((n == (@page_later+2)) && (@page_later + 2 != page_count-1)) %></li>
-                <% end %>
-              <% end %>
-            <% end %>
-          <% end %>
-
-          <% if @page_later != page_count -%>
-            <li class="nextpage">
-              <%=  link_to 'Next &#187;', { :page_later => (@page_later + 1) }, :class => "prevnext" %>
-            </li>
-          <% else -%>
-            <li class="disablepage">Next &#187;</li>
-          <% end -%>
-        </ul>
-      </div>
-    <% end -%>
-  </div>
-  <div id='recently_added_events'>
     <h3><%= link_to("View future events &raquo;", events_path(:anchor => "event-#{@times_to_events[:more].id}")) if @times_to_events[:more] %></h3>
   </div>
 </div>
