@@ -25,7 +25,7 @@ class EventsController < ApplicationController
         Event.find_by_dates(@start_date, @end_date, :order => order) :
         Event.find_future_events(:order => order)
     }
-    @perform_caching = params[:order].blank? && params[:date].blank?
+    @perform_caching = params[:order].blank? && params[:date].blank? && params[:page].blank?
 
     @page_title = "Events"
 
@@ -207,6 +207,9 @@ class EventsController < ApplicationController
     @current = ["1", "true"].include?(params[:current])
     @order = params[:order].presence
 
+    @start_date = date_or_default_for(:startsearch)
+    @end_date = date_or_default_for(:endsearch)
+
     if @order && @order == "score" && @tag
       flash[:failure] = "You cannot sort tags by score"
       @order = nil
@@ -222,7 +225,7 @@ class EventsController < ApplicationController
       flash[:failure] = "You can't search by tag and query at the same time"
       return redirect_to(root_path)
     elsif @query
-      @grouped_events = Event.search_keywords_grouped_by_currentness(@query, :order => @order, :skip_old => @current)
+      @grouped_events = Event.search_keywords_grouped_by_currentness(@query, :order => @order, :skip_old => @current, :start_date => @start_date, :end_date => @end_date)
     elsif @tag
       @grouped_events = Event.search_tag_grouped_by_currentness(@tag, :order => @order, :current => @current)
     end
@@ -298,6 +301,16 @@ protected
   # Return the default end date.
   def default_end_date
     Time.today + 3.days
+  end
+
+  # Return the default start date.
+  def default_startsearch_date
+    Time.today
+  end
+
+  # Return the default end date.
+  def default_endsearch_date
+    Time.today
   end
 
   # Return a date parsed from user arguments or a default date. The +kind+

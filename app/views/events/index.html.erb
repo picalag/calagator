@@ -47,7 +47,7 @@
 
   <div id='list_items'>
     <% @page||=1 %>
-    
+
     <%= render :partial => 'events/table', :locals => { :events => @events[((@page-1)*20),20] } %>
 
     <%
@@ -61,7 +61,7 @@
         <ul>
           <% if @page != 1 -%>
             <li>
-              <%= link_to '&#171; Previous', { :page => (@page - 1) }, :class=>"prevnext" %>
+              <%= link_to '&#171; Previous', params.merge({:page => (@page - 1)}), :class=>"prevnext" %>
             </li>
           <% else -%>
             <li>&#171; Previous</li>
@@ -70,22 +70,22 @@
           <% for n in (1..page_count) %>
             <% if(n == 1) %>
               <% if(@page == 1) %>
-                <li><%= link_to n, {:page => n}, :class => "currentpage" %></li>
+                <li><%= link_to n, params.merge({:page => n}), :class => "currentpage" %></li>
               <% else %>
-                <li><%= link_to n, :page => n %></li>
+                <li><%= link_to n, params.merge({:page => n}) %></li>
               <% end %>
             <% elsif (n == page_count) %>
               <% if(@page == page_count) %>
-                <li><%= link_to n, {:page => n}, :class => "currentpage" %></li>
+                <li><%= link_to n, params.merge({:page => n}), :class => "currentpage" %></li>
               <% else %>
-                <li><%= link_to n, :page => n %></li>
+                <li><%= link_to n, params.merge({:page => n}) %></li>
               <% end %>
             <% else %>
               <% if ((n >= (@page - 2)) && (n <= (@page+2)) && (n != 1) && (n != page_count)) %>
                 <% if(@page == n) %>
-                  <li><%= link_to n, {:page => n}, :class => "currentpage" %></li>
+                  <li><%= link_to n, params.merge({:page => n}), :class => "currentpage" %></li>
                 <% else %>
-                  <li><%= "..." if ((n == (@page - 2)) && (@page - 2 != 2)) %><%= link_to n, :page => n %><%= "..." if ((n == (@page+2)) && (@page + 2 != page_count-1)) %></li>
+                  <li><%= " ... " if ((n == (@page - 2)) && (@page - 2 != 2)) %><%= link_to n, params.merge({:page => n}) %><%= "..." if ((n == (@page+2)) && (@page + 2 != page_count-1)) %></li>
                 <% end %>
               <% end %>
             <% end %>
@@ -93,14 +93,14 @@
 
           <% if @page != page_count -%>
             <li class="nextpage">
-              <%=  link_to 'Next &#187;', { :page => (@page + 1) }, :class => "prevnext" %>
-            </li>
-          <% else -%>
-            <li class="disablepage">Next &#187;</li>
-          <% end -%>
-        </ul>
-      </div>
-    <% end -%>
+                <%=  link_to 'Next &#187;', params.merge({:page => (@page + 1)}), :class => "prevnext" %>
+              </li>
+            <% else -%>
+              <li class="disablepage">Next &#187;</li>
+            <% end -%>
+          </ul>
+        </div>
+      <% end -%>
 
-  </div>
-<% end %>
+    </div>
+  <% end %>

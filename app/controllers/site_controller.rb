@@ -19,6 +19,9 @@ class SiteController < ApplicationController
     if(params[:page_later])
       @page_later = params[:page_later].to_i
     end
+
+    @perform_caching = params[:page_today].blank? && params[:page_later].blank? && params[:page_tomorrow].blank?
+    
     @times_to_events_deferred = lambda { Event.select_for_overview }
     @tagcloud_items_deferred = lambda { Tag.for_tagcloud }
   end

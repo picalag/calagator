@@ -22,6 +22,7 @@ class SearchEngine::Sql < SearchEngine::Base
         def self.search(query, opts={})
           skip_old = opts[:skip_old] == true
           limit = opts[:limit] || 50
+          
 
           order = \
             case opts[:order].try(:to_sym)
@@ -47,6 +48,15 @@ class SearchEngine::Sql < SearchEngine::Base
             conditions_text = "events.start_time >= ? AND (#{conditions_text})"
             conditions_arguments = [Date.yesterday.to_time] + conditions_arguments
           end
+          if(opts[:date])
+            conditions_text = "events.start_time >= ? AND events.end_time <= ? AND (#{conditions_text})"
+            conditions_arguments = [(opts[:date].to_time - 1.hour).to_time, (opts[:date]+1.day).to_time] + conditions_arguments
+          end
+          if(opts[:start_date] && opts[:end_date])
+            conditions_text = "events.start_time >= ? AND events.end_time <= ? AND (#{conditions_text})"
+            conditions_arguments = [(opts[:start_date].to_time - 1.hour).to_time, (opts[:end_date]+1.day).to_time] + conditions_arguments
+          end
+
           conditions = [conditions_text, *conditions_arguments]
           return Event.all(:conditions => conditions, :order => order, :limit => limit, :include => [:venue, :taggings, :tags])
         end

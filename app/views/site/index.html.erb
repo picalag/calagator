@@ -1,6 +1,6 @@
 <% tabindex_on '#search_field' %>
 
-<% cache(CacheObserver.daily_key_for("site_index", request)) do %>
+<% cache_if(@perform_caching, CacheObserver.daily_key_for("site_index", request)) do %>
 <% @times_to_events ||= @times_to_events_deferred.call %>
 <a href="#" id="homepage_sidebar_toggle" class="expander_toggle">Hi there. Learn about this site and how to use it...</a>
 <div id="homepage_sidebar">
@@ -33,7 +33,7 @@
         <ul>
           <% if @page_today != 1 -%>
             <li>
-              <%= link_to '&#171; Previous', { :page_today => (@page_today - 1) }, :class=>"prevnext" %>
+              <%= link_to '&#171; Previous', params.merge({ :page_today => (@page_today - 1) }), :class=>"prevnext" %>
             </li>
           <% else -%>
             <li>&#171; Previous</li>
@@ -42,22 +42,22 @@
           <% for n in (1..page_count) %>
             <% if(n == 1) %>
               <% if(@page_today == 1) %>
-                <li><%= link_to n, {:page_today => n}, :class => "currentpage" %></li>
+                <li><%= link_to n, params.merge({:page_today => n}), :class => "currentpage" %></li>
               <% else %>
-                <li><%= link_to n, :page_today => n %></li>
+                <li><%= link_to n, params.merge({:page_today => n}) %></li>
               <% end %>
             <% elsif (n == page_count) %>
               <% if(@page_today == page_count) %>
-                <li><%= link_to n, {:page_today => n}, :class => "currentpage" %></li>
+                <li><%= link_to n, params.merge({:page_today => n}), :class => "currentpage" %></li>
               <% else %>
-                <li><%= link_to n, :page_today => n %></li>
+                <li><%= link_to n, params.merge({:page_today => n}) %></li>
               <% end %>
             <% else %>
               <% if ((n >= (@page_today - 2)) && (n <= (@page_today+2)) && (n != 1) && (n != page_count)) %>
                 <% if(@page_today == n) %>
-                  <li><%= link_to n, {:page_today => n}, :class => "currentpage" %></li>
+                  <li><%= link_to n, params.merge({:page_today => n}), :class => "currentpage" %></li>
                 <% else %>
-                  <li><%= "..." if ((n == (@page_today - 2)) && (@page_today - 2 != 2)) %><%= link_to n, :page_today => n %><%= "..." if ((n == (@page_today+2)) && (@page_today + 2 != page_count-1)) %></li>
+                  <li><%= "..." if ((n == (@page_today - 2)) && (@page_today - 2 != 2)) %><%= link_to n, params.merge({:page_today => n}) %><%= "..." if ((n == (@page_today+2)) && (@page_today + 2 != page_count-1)) %></li>
                 <% end %>
               <% end %>
             <% end %>
@@ -65,7 +65,7 @@
 
           <% if @page_today != page_count -%>
             <li class="nextpage">
-              <%=  link_to 'Next &#187;', { :page_today => (@page_today + 1) }, :class => "prevnext" %>
+              <%=  link_to 'Next &#187;', params.merge({ :page_today => (@page_today + 1) }), :class => "prevnext" %>
             </li>
           <% else -%>
             <li class="disablepage">Next &#187;</li>
@@ -87,7 +87,7 @@
         <ul>
           <% if @page_tomorrow != 1 -%>
             <li>
-              <%= link_to '&#171; Previous', { :page_tomorrow => (@page_tomorrow - 1) }, :class=>"prevnext" %>
+              <%= link_to '&#171; Previous', params.merge({ :page_tomorrow => (@page_tomorrow - 1) }), :class=>"prevnext" %>
             </li>
           <% else -%>
             <li>&#171; Previous</li>
@@ -96,22 +96,22 @@
           <% for n in (1..page_count) %>
             <% if(n == 1) %>
               <% if(@page_tomorrow == 1) %>
-                <li><%= link_to n, {:page_tomorrow => n}, :class => "currentpage" %></li>
+                <li><%= link_to n, params.merge({:page_tomorrow => n}), :class => "currentpage" %></li>
               <% else %>
-                <li><%= link_to n, :page_tomorrow => n %></li>
+                <li><%= link_to n, params.merge({:page_tomorrow => n}) %></li>
               <% end %>
             <% elsif (n == page_count) %>
               <% if(@page_tomorrow == page_count) %>
-                <li><%= link_to n, {:page_tomorrow => n}, :class => "currentpage" %></li>
+                <li><%= link_to n, params.merge({:page_tomorrow => n}), :class => "currentpage" %></li>
               <% else %>
-                <li><%= link_to n, :page_tomorrow => n %></li>
+                <li><%= link_to n, params.merge({:page_tomorrow => n}) %></li>
               <% end %>
             <% else %>
               <% if ((n >= (@page_tomorrow - 2)) && (n <= (@page_tomorrow+2)) && (n != 1) && (n != page_count)) %>
                 <% if(@page_tomorrow == n) %>
-                  <li><%= link_to n, {:page_tomorrow => n}, :class => "currentpage" %></li>
+                  <li><%= link_to n, params.merge({:page_tomorrow => n}), :class => "currentpage" %></li>
                 <% else %>
-                  <li><%= "..." if ((n == (@page_tomorrow - 2)) && (@page_tomorrow - 2 != 2)) %><%= link_to n, :page_tomorrow => n %><%= "..." if ((n == (@page_tomorrow+2)) && (@page_tomorrow + 2 != page_count-1)) %></li>
+                  <li><%= "..." if ((n == (@page_tomorrow - 2)) && (@page_tomorrow - 2 != 2)) %><%= link_to n, params.merge({:page_tomorrow => n}) %><%= "..." if ((n == (@page_tomorrow+2)) && (@page_tomorrow + 2 != page_count-1)) %></li>
                 <% end %>
               <% end %>
             <% end %>
@@ -119,7 +119,7 @@
 
           <% if @page_tomorrow != page_count -%>
             <li class="nextpage">
-              <%=  link_to 'Next &#187;', { :page_tomorrow => (@page_tomorrow + 1) }, :class => "prevnext" %>
+              <%=  link_to 'Next &#187;', params.merge({ :page_tomorrow => (@page_tomorrow + 1) }), :class => "prevnext" %>
             </li>
           <% else -%>
             <li class="disablepage">Next &#187;</li>

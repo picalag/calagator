@@ -7,6 +7,27 @@
 <%= render :partial => 'search_section', :locals => {:description => "past", :events => @grouped_events[:past]} %>
 
 <div id='list_filters' class='sidebar'>
+
+  <h3 class='first'>Search by date</h3>
+
+    <% form_tag request.request_uri, :method => 'get' do  -%>
+      <div id="date_filter">
+        <div id='start_calendar'>
+          <label for='date_start'>From</label>
+          <%= text_field_tag 'date[startsearch]', @start_date.strftime('%Y-%m-%d'), :id => 'date_start', :class => 'date_picker' %>
+        </div>
+        <div id='end_calendar'>
+          <label for='date_end'>To</label>
+          <%= text_field_tag 'date[endsearch]', @end_date.strftime('%Y-%m-%d'), :id => 'date_end', :class => 'date_picker' %>
+        </div>
+        <input name="query" value="<%= params[:query] %>" type="hidden" />
+        <div>
+          <label for="commit">&nbsp;</label>
+          <%= submit_tag 'Go' %>
+        </div>
+      </div>
+    <% end %>
+
   <h3>Subscribe to</h3>
   <ul>
     <li><%= link_to "iCalendar feed", url_for(:action => "search", :protocol => "webcal", :only_path => false, :query => @query, :format => "ics") %></li>
